@@ -1,0 +1,21 @@
+OOP is called a "programming paradigm"
+
+Usually starts with a Class, which has 2 parts
+    1. attributes (the things describing the class)
+    2. methods (verbs, what the class can do)
+
+Classes allow us to establish relationships between objects
+
+ex of a class:
+class Animal:
+    """a simple note to describe the class"""
+    def __init__(self, name, hunger, diet):  <-- "self" is basically this, what we're referring to
+        self.name = name
+        self.hunger = hunger
+        self.diet = diet
+    def eat():
+        print("you better eat!")
+
+
+Classes are basically like blueprints for a thing you want to create
+
