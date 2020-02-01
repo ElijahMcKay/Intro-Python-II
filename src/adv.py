@@ -1,5 +1,5 @@
 from room import Room
-from player import Player
+# from player import Player
 
 # Declare all the rooms
 
@@ -34,6 +34,8 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+for i in room:
+    print(i)
 #
 # Main
 #
