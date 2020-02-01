@@ -1,6 +1,8 @@
 from room import Room
 from player import Player
 from item import Item
+# importing sys so we can use sys.exit() to have the program stop on press of "q"
+import sys
 # Declare all the rooms
 
 room = {
@@ -34,13 +36,18 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-for i in room:
-    print(i)
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
+player = Player("Gandalf", room['outside']) # constructed with a name and current_room attribute
+
+# print(player.current_room) # gives me a name "Gandalf, and a current_room: "Outside Cave Entrance" attribute
+# print("room outside", room['outside'])
+# creating variables for common
+currentRoom = player.current_room
+# roomDescription = currentRoom.description
 
 # Write a loop that:
 #
@@ -52,3 +59,37 @@ for i in room:
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+# print(player)
+while(currentRoom != 'treasure'):
+    print(f"You are now in {currentRoom}.  {currentRoom.description}\nWhat would you like to do?")
+    # print("n + Enter to move north\ne + Enter to move east\ns + Enter to move south\nw + Enter to move west")
+    # capturing the input
+    userInput = input()
+
+    if(hasattr(currentRoom, 'n_to') and userInput == 'n'):
+        currentRoom = currentRoom.n_to
+    elif(hasattr(currentRoom, 'e_to') and userInput == 'e'):
+        currentRoom = currentRoom.e_to
+    elif(hasattr(currentRoom, 's_to') and userInput == 's'):
+        currentRoom = currentRoom.s_to
+    elif(hasattr(currentRoom, 'w_to') and userInput == 'w'):
+        currentRoom = currentRoom.w_to
+    else:
+        print("That doesn't lead anywhere.")
+
+
+    # handling the user quitting the game
+    if userInput == "q":
+        print("Come back now, ya hear!")
+        sys.exit()
+
+
+# playing around with how I'm going to allow the user to quit the program
+# quit = input()
+
+# if quit == "q":
+#     print("Come back now, ya hear!")
+#     sys.exit()
+# else:
+#     print('kept going')
