@@ -3,9 +3,10 @@
 
 class Room:
     # base class for rooms
-    def __init__(self, name, description):
+    def __init__(self, name, description, itemArr):
         self.name = name
         self.description = description
+        self.itemArr = itemArr
 
     def __str__(self):
-        return f"room {self.name}"
+        return f"{self.itemArr}"

@@ -7,7 +7,7 @@ import sys
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons.  There are torches on either side of the cave opening."),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -24,6 +24,13 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
+# creating items
+item = {
+    "ruby": Item("ruby", "A shimmering jewel glints by the light of your torch."),
+    "note": Item("note", "It is to smudged to read."),
+    "book": Item("Spelunking for Dummies", "A book detailing the basics of cave exploration.  It looks as if it has never been opened."),
+    "torch": Item("torch", "Illuminates the cave making it easier to explore and find items.", ),
+}
 
 # Link rooms together
 
@@ -36,18 +43,25 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
+# adding items to rooms
+room['outside'].itemArr = [item['torch']]
+room['foyer'].itemArr = [item['book']]
+room['narrow'].itemArr = [item['note']]
+room['overlook'].itemArr = [item['ruby']]
+
+# room['outside'].itemArr.append('test')
+# print(type(room['overlook'].itemArr))
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player = Player("Gandalf", room['outside']) # constructed with a name and current_room attribute
+player = Player("Gandalf", room['outside']) # constructed with a name, current_room, and empty itemArr attribute
 
-# print(player.current_room) # gives me a name "Gandalf, and a current_room: "Outside Cave Entrance" attribute
-# print("room outside", room['outside'])
-# creating variables for common
 currentRoom = player.current_room
-# roomDescription = currentRoom.description
+roomItems = currentRoom.itemArr
+player.itemArr = ['test', 'test', 'test']
+
 
 # Write a loop that:
 #
@@ -62,11 +76,15 @@ currentRoom = player.current_room
 
 # print(player)
 while(currentRoom != 'treasure'):
-    print(f"You are now in {currentRoom}.  {currentRoom.description}\nWhat would you like to do?")
+    print(f"You are now in {currentRoom}.  {currentRoom.description}\nYou find the following items:")
+    print(roomItems[0])
+    
+    print("What would you like to do?")
     # print("n + Enter to move north\ne + Enter to move east\ns + Enter to move south\nw + Enter to move west")
     # capturing the input
     userInput = input()
 
+    # logic for moving cardinal directions
     if(hasattr(currentRoom, 'n_to') and userInput == 'n'):
         currentRoom = currentRoom.n_to
     elif(hasattr(currentRoom, 'e_to') and userInput == 'e'):
@@ -83,13 +101,3 @@ while(currentRoom != 'treasure'):
     if userInput == "q":
         print("Come back now, ya hear!")
         sys.exit()
-
-
-# playing around with how I'm going to allow the user to quit the program
-# quit = input()
-
-# if quit == "q":
-#     print("Come back now, ya hear!")
-#     sys.exit()
-# else:
-#     print('kept going')
