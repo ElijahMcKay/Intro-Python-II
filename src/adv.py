@@ -5,9 +5,17 @@ from item import Item
 import sys
 # Declare all the rooms
 
+item = {
+    "ruby": Item("ruby", "A shimmering jewel glints by the light of your torch."),
+    "note": Item("note", "It is to smudged to read."),
+    "book": Item("Spelunking for Dummies", "A book detailing the basics of cave exploration.  It looks as if it has never been opened."),
+    "torch": Item("torch", "Illuminates the cave making it easier to explore and find items.", ),
+}
+
+
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons.  There are torches on either side of the cave opening."),
+                     "North of you, the cave mount beckons.  There are torches on either side of the cave opening.", [item['torch'], item['ruby'], item['note']]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east."""),
@@ -24,14 +32,6 @@ chamber! Sadly, it has already been completely emptied by
 earlier adventurers. The only exit is to the south."""),
 }
 
-# creating items
-item = {
-    "ruby": Item("ruby", "A shimmering jewel glints by the light of your torch."),
-    "note": Item("note", "It is to smudged to read."),
-    "book": Item("Spelunking for Dummies", "A book detailing the basics of cave exploration.  It looks as if it has never been opened."),
-    "torch": Item("torch", "Illuminates the cave making it easier to explore and find items.", ),
-}
-
 # Link rooms together
 
 room['outside'].n_to = room['foyer']
@@ -43,12 +43,6 @@ room['narrow'].w_to = room['foyer']
 room['narrow'].n_to = room['treasure']
 room['treasure'].s_to = room['narrow']
 
-# adding items to rooms
-room['outside'].itemArr = [item['torch']]
-room['foyer'].itemArr = [item['book']]
-room['narrow'].itemArr = [item['note']]
-room['overlook'].itemArr = [item['ruby']]
-
 # room['outside'].itemArr.append('test')
 # print(type(room['overlook'].itemArr))
 #
@@ -56,11 +50,7 @@ room['overlook'].itemArr = [item['ruby']]
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player = Player("Gandalf", room['outside']) # constructed with a name, current_room, and empty itemArr attribute
-
-currentRoom = player.current_room
-roomItems = currentRoom.itemArr
-player.itemArr = ['test', 'test', 'test']
+player = Player("Gandalf", room['outside']) # constructed with a name, current_room
 
 
 # Write a loop that:
@@ -75,29 +65,48 @@ player.itemArr = ['test', 'test', 'test']
 # If the user enters "q", quit the game.
 
 # print(player)
-while(currentRoom != 'treasure'):
-    print(f"You are now in {currentRoom}.  {currentRoom.description}\nYou find the following items:")
-    print(roomItems[0])
-    
+while(player.current_room != 'treasure'):
+    print(f"You are now in {player.current_room.name}.  {player.current_room.description}\nYou find the following items:")
+    player.current_room.showItems()
+    # for i in player.current_room.itemArr:
     print("What would you like to do?")
     # print("n + Enter to move north\ne + Enter to move east\ns + Enter to move south\nw + Enter to move west")
     # capturing the input
     userInput = input()
 
     # logic for moving cardinal directions
-    if(hasattr(currentRoom, 'n_to') and userInput == 'n'):
-        currentRoom = currentRoom.n_to
-    elif(hasattr(currentRoom, 'e_to') and userInput == 'e'):
-        currentRoom = currentRoom.e_to
-    elif(hasattr(currentRoom, 's_to') and userInput == 's'):
-        currentRoom = currentRoom.s_to
-    elif(hasattr(currentRoom, 'w_to') and userInput == 'w'):
-        currentRoom = currentRoom.w_to
+    if(hasattr(player.current_room, 'n_to') and userInput == 'n'):
+        player.current_room = player.current_room.n_to
+    elif(hasattr(player.current_room, 'e_to') and userInput == 'e'):
+        player.current_room = player.current_room.e_to
+    elif(hasattr(player.current_room, 's_to') and userInput == 's'):
+        player.current_room = player.current_room.s_to
+    elif(hasattr(player.current_room, 'w_to') and userInput == 'w'):
+        player.current_room = player.current_room.w_to
     else:
         print("That doesn't lead anywhere.")
 
 
-    # handling the user quitting the game
+    # handling the user inputs the game
     if userInput == "q":
         print("Come back now, ya hear!")
         sys.exit()
+    elif 'get' in userInput:
+        # slicing the item the user wants out of the string they insert
+        actionItem = userInput.split()
+        # print(actionItem)
+        if actionItem[1] not in player.itemArr:
+            player.getItem(actionItem[1])
+            player.current_room.showItems()
+            # player.current_room.itemArr.remove(actionItem[1])
+            # print(player.itemArr)
+            print(f"You have picked up the {actionItem[1]}")
+            print(f"You now have the following items:")
+            player.showItems()
+    elif 'drop' in userInput:
+        # slicing the item the user wants out of the string they insert
+        actionItem = userInput.split()
+        if actionItem[1] in player.itemArr:
+            player.dropItem(actionItem[1])
+            player.current_room.itemArr.append(actionItem[1])
+
