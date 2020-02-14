@@ -64,25 +64,22 @@ player = Player("Gandalf", room['outside']) # constructed with a name, current_r
 #
 # If the user enters "q", quit the game.
 
-# print(player)
-while(player.current_room != 'treasure'):
-    print(f"You are now in {player.current_room.name}.  {player.current_room.description}\nYou find the following items:")
-    player.current_room.showItems()
+
+# declaring this outside of loop, so it won't reset every time the loop iterates
+currRoom = player.current_room
+
+while True:
+    print(f"You are now in {currRoom.name}.  {currRoom.description}\nYou find the following items:")
+    
+    currRoom.showItems()
     # for i in player.current_room.itemArr:
     print("What would you like to do?")
     # print("n + Enter to move north\ne + Enter to move east\ns + Enter to move south\nw + Enter to move west")
     # capturing the input
     userInput = input()
-
     # logic for moving cardinal directions
-    if(hasattr(player.current_room, 'n_to') and userInput == 'n'):
-        player.current_room = player.current_room.n_to
-    elif(hasattr(player.current_room, 'e_to') and userInput == 'e'):
-        player.current_room = player.current_room.e_to
-    elif(hasattr(player.current_room, 's_to') and userInput == 's'):
-        player.current_room = player.current_room.s_to
-    elif(hasattr(player.current_room, 'w_to') and userInput == 'w'):
-        player.current_room = player.current_room.w_to
+    if(hasattr(currRoom, f"{userInput}_to")):
+        currRoom = getattr(currRoom, f"{userInput}_to")
     else:
         print("That doesn't lead anywhere.")
 
@@ -98,8 +95,6 @@ while(player.current_room != 'treasure'):
         if actionItem[1] not in player.itemArr:
             player.getItem(actionItem[1])
             player.current_room.showItems()
-            # player.current_room.itemArr.remove(actionItem[1])
-            # print(player.itemArr)
             print(f"You have picked up the {actionItem[1]}")
             print(f"You now have the following items:")
             player.showItems()
